@@ -2,11 +2,15 @@
 
 Download the app for **free** on Google Play: [https://play.google.com/store/apps/details?id=com.jmartin.writeily](https://play.google.com/store/apps/details?id=com.jmartin.writeily)
 
+## Website
+
+The landing page for Writeily is also open sourced in this repository, under the [gh-pages branch](https://github.com/jffrymrtn/writeily/tree/gh-pages).
+
 ## Contributions
 
 Contribution guidelines coming soon!
 
-For feature requests, bug reports, and all that jazz, feel free to open an [Issue](https://github.com/jffrymrtn/writeily/issues)
+For feature requests, bug reports, and all that jazz, feel free to open an [Issue](https://github.com/jffrymrtn/writeily/issues).
 
 ## License
 
