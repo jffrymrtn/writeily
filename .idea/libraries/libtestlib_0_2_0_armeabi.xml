@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="libtestlib-0.2.0-armeabi">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/writeily/libs/anddown/libs/libtestlib-0.2.0-armeabi.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
