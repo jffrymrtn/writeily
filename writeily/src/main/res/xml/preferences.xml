@@ -26,6 +26,11 @@
             android:entries="@array/themes_array"
             android:entryValues="@array/themes_array"
             android:defaultValue="@string/theme_light" />
+
+        <SwitchPreference
+            android:key="pref_pin"
+            android:title="@string/pref_pin"
+            android:defaultValue="false" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/social">

@@ -66,5 +66,6 @@
     <string name="share_as">Share as&#8230;</string>
     <string name="pref_font_size">Font Size</string>
     <string name="pref_font_size_key">pref_font_size_key</string>
+    <string name="pref_pin">Lock app with a Pin</string>
 
 </resources>
