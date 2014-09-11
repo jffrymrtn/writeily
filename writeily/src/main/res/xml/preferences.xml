@@ -27,8 +27,8 @@
             android:entryValues="@array/themes_array"
             android:defaultValue="@string/theme_light" />
 
-        <SwitchPreference
-            android:key="pref_pin"
+        <CheckBoxPreference
+            android:key="@string/pref_pin_key"
             android:title="@string/pref_pin"
             android:defaultValue="false" />
     </PreferenceCategory>
