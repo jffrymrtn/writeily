@@ -7,9 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +19,11 @@ import com.commonsware.cwac.anddown.AndDown;
 import com.jmartin.writeily.dialog.ShareDialog;
 import com.jmartin.writeily.model.Constants;
 import com.jmartin.writeily.model.Note;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Created by jeff on 2014-04-11.
@@ -57,10 +62,9 @@ public class NoteActivity extends Activity {
         String type = receivingIntent.getType();
 
         if (Intent.ACTION_SEND.equals(intentAction) && type != null) {
-            if ("text/plain".equals(type)) {
-                note = new Note();
-                note.setContent(receivingIntent.getStringExtra(Intent.EXTRA_TEXT));
-            }
+            openFromSendAction(receivingIntent);
+        } else if (Intent.ACTION_EDIT.equals(intentAction) && type != null) {
+            openFromEditAction(receivingIntent);
         } else {
             note = (Note) getIntent().getSerializableExtra(Constants.NOTE_KEY);
         }
@@ -77,6 +81,52 @@ public class NoteActivity extends Activity {
         setupAppearancePreferences();
 
         super.onCreate(savedInstanceState);
+    }
+
+    private void openFromSendAction(Intent receivingIntent) {
+        note = new Note();
+        String content = "";
+        Uri fileUri = receivingIntent.getParcelableExtra(Intent.EXTRA_STREAM);
+
+        if (fileUri != null) {
+            try {
+                InputStreamReader reader = new InputStreamReader(getContentResolver().openInputStream(fileUri));
+                BufferedReader br = new BufferedReader(reader);
+
+                while (br.ready()) {
+                    content = br.readLine();
+                }
+
+                note.setContent(content);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void openFromEditAction(Intent receivingIntent) {
+        note = new Note();
+        String content = "";
+        Uri fileUri = receivingIntent.getData();
+
+        if (fileUri != null) {
+            try {
+                InputStreamReader reader = new InputStreamReader(getContentResolver().openInputStream(fileUri));
+                BufferedReader br = new BufferedReader(reader);
+
+                while (br.ready()) {
+                    content = br.readLine();
+                }
+
+                note.setContent(content);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -188,7 +238,7 @@ public class NoteActivity extends Activity {
 
     private void showShareDialog() {
         FragmentManager fragManager = getFragmentManager();
-        ShareDialog shareDialog = new ShareDialog(this);
+        ShareDialog shareDialog = new ShareDialog();
         shareDialog.show(fragManager, Constants.SHARE_DIALOG_TAG);
     }
 
