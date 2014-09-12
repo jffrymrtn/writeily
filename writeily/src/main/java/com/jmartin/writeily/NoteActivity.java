@@ -238,7 +238,7 @@ public class NoteActivity extends Activity {
 
     private void showShareDialog() {
         FragmentManager fragManager = getFragmentManager();
-        ShareDialog shareDialog = new ShareDialog(this);
+        ShareDialog shareDialog = new ShareDialog();
         shareDialog.show(fragManager, Constants.SHARE_DIALOG_TAG);
     }
 

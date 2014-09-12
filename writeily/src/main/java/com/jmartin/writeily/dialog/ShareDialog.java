@@ -1,7 +1,6 @@
 package com.jmartin.writeily.dialog;
 
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,23 +16,17 @@ import com.jmartin.writeily.model.Constants;
  */
 public class ShareDialog extends DialogFragment {
 
-    private Context context;
-
     private Button shareTextButton;
     private Button shareHtmlButton;
 
     public ShareDialog() {
     }
 
-    public ShareDialog(Context context) {
-        this.context = context;
-    }
-
     public void sendBroadcast(int type) {
         Intent broadcast = new Intent();
         broadcast.setAction(Constants.SHARE_BROADCAST_TAG);
         broadcast.putExtra(Constants.SHARE_TYPE_TAG, type);
-        context.sendBroadcast(broadcast);
+        getActivity().sendBroadcast(broadcast);
     }
 
     @Override
