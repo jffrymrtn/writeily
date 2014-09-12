@@ -27,11 +27,11 @@
                 android:layout_height="56dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginRight="16dp"
                 android:text="@string/plus"
                 android:textColor="@android:color/white"
-                android:textSize="48sp"
+                android:textSize="32sp"
                 android:includeFontPadding="false"
                 android:fontFamily="sans-serif"
                 android:background="@drawable/new_note_background" />

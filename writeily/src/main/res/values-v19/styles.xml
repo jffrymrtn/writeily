@@ -23,7 +23,7 @@
         <item name="android:listViewStyle">@style/PreferenceListViewStyle</item>
     </style>
 
-    <style name="PreferenceListViewStyle" parent="android:Widget.ListView">
+    <style name="PreferenceListViewStyle" parent="android:Widget.Holo.ListView">
         <item name="android:background">@android:color/white</item>
         <item name="android:divider">@android:color/white</item>
         <item name="android:dividerHeight">0dip</item>
