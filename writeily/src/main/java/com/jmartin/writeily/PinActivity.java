@@ -33,6 +33,9 @@ public class PinActivity extends Activity {
         // Get the Intent (to check if coming from Settings)
         String action = getIntent().getAction();
 
+        // Get the pin a user may have set
+        pin = PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.USER_PIN_KEY, "");
+
         if (action.equalsIgnoreCase(Constants.SET_PIN_ACTION)) {
             isSettingUp = true;
         } else {
@@ -49,8 +52,6 @@ public class PinActivity extends Activity {
         pin4 = (EditText) findViewById(R.id.pin4);
 
         attachPinListeners();
-
-        pin = PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.USER_PIN_KEY, "");
 
         super.onCreate(savedInstanceState);
     }
@@ -125,6 +126,11 @@ public class PinActivity extends Activity {
         });
     }
 
+    /**
+     * Checks and validates the pin that was entered with the pin in the SharedPreferences.
+     * This process runs every time one of the four pin EditText fields is modified.
+     * Once the entered pin matches the pin the user set, then redirect to the main activity.
+     */
     private void checkPin() {
         String enteredPin = pin1.getText().toString() + pin2.getText().toString() + pin3.getText().toString() + pin4.getText().toString();
 
@@ -149,14 +155,27 @@ public class PinActivity extends Activity {
         }
     }
 
+    /**
+     * Checks if the user enabled pin protection. If they didn't, redirect to the Main Activity.
+     */
     private void checkIfPinRequired() {
-        boolean pinRequired = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_pin", false);
+        boolean pinRequired = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_pin_key), false);
 
         if (!pinRequired) {
             startMain();
+        } else {
+            // Check if user set up a pin but didn't enter one, in this case, set pin required to false
+            if (pin.length() < 4) {
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putBoolean(getString(R.string.pref_pin_key), false).apply();
+                startMain();
+            }
         }
     }
 
+    /**
+     * Start the main activity.
+     */
     private void startMain() {
         Intent mainIntent = new Intent(this, MainActivity.class);
         startActivity(mainIntent);
