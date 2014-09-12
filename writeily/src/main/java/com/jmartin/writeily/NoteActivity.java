@@ -10,7 +10,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,7 +62,9 @@ public class NoteActivity extends Activity {
         String type = receivingIntent.getType();
 
         if (Intent.ACTION_SEND.equals(intentAction) && type != null) {
-            openFileAsNote(receivingIntent);
+            openFromSendAction(receivingIntent);
+        } else if (Intent.ACTION_EDIT.equals(intentAction) && type != null) {
+            openFromEditAction(receivingIntent);
         } else {
             note = (Note) getIntent().getSerializableExtra(Constants.NOTE_KEY);
         }
@@ -82,24 +83,49 @@ public class NoteActivity extends Activity {
         super.onCreate(savedInstanceState);
     }
 
-    private void openFileAsNote(Intent receivingIntent) {
+    private void openFromSendAction(Intent receivingIntent) {
         note = new Note();
         String content = "";
-        Uri fileUri = (Uri) receivingIntent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Uri fileUri = receivingIntent.getParcelableExtra(Intent.EXTRA_STREAM);
 
-        try {
-            InputStreamReader reader = new InputStreamReader(getContentResolver().openInputStream(fileUri));
-            BufferedReader br = new BufferedReader(reader);
+        if (fileUri != null) {
+            try {
+                InputStreamReader reader = new InputStreamReader(getContentResolver().openInputStream(fileUri));
+                BufferedReader br = new BufferedReader(reader);
 
-            while (br.ready()) {
-                content = br.readLine();
+                while (br.ready()) {
+                    content = br.readLine();
+                }
+
+                note.setContent(content);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+    }
 
-            note.setContent(content);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void openFromEditAction(Intent receivingIntent) {
+        note = new Note();
+        String content = "";
+        Uri fileUri = receivingIntent.getData();
+
+        if (fileUri != null) {
+            try {
+                InputStreamReader reader = new InputStreamReader(getContentResolver().openInputStream(fileUri));
+                BufferedReader br = new BufferedReader(reader);
+
+                while (br.ready()) {
+                    content = br.readLine();
+                }
+
+                note.setContent(content);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
