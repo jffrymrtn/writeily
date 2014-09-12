@@ -4,7 +4,7 @@
         <!-- Customize your theme here. -->
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowBackground">@color/light_green</item>
+        <item name="android:windowBackground">@color/green</item>
 
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
         <item name="android:windowContentOverlay">@null</item>

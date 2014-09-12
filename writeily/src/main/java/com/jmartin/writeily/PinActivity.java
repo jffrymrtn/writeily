@@ -45,6 +45,10 @@ public class PinActivity extends Activity {
         setContentView(R.layout.activity_pin);
         context = getApplicationContext();
 
+        if (getActionBar() != null) {
+            getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
         // Find pin EditTexts
         pin1 = (EditText) findViewById(R.id.pin1);
         pin2 = (EditText) findViewById(R.id.pin2);
@@ -114,10 +118,12 @@ public class PinActivity extends Activity {
         // Pin 4
         pin4.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
