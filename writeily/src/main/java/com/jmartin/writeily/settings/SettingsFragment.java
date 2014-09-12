@@ -9,8 +9,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-import android.util.Log;
 
 import com.jmartin.writeily.PinActivity;
 import com.jmartin.writeily.R;
@@ -30,7 +28,6 @@ public class SettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferences);
 
         context = getActivity().getApplicationContext();
-
         pinPreference = (CheckBoxPreference) findPreference(getString(R.string.pref_pin_key));
 
         // Listen for Pin Preference change

@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
