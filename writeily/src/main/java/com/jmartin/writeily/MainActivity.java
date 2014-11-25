@@ -1,6 +1,7 @@
 package com.jmartin.writeily;
 
 import android.app.FragmentManager;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -11,13 +12,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SearchView;
+import android.support.v7.widget.SearchView;
+import android.widget.TextView;
 
 import com.jmartin.writeily.adapter.DrawerAdapter;
 import com.jmartin.writeily.settings.SettingsActivity;
@@ -118,11 +121,11 @@ public class MainActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        // Configure SearchView TextView font stuff
-        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-//        TextView searchViewTextView = (TextView) searchView.findViewById(textViewId);
-//        searchViewTextView.setTextColor(getResources().getColor(android.R.color.white));
-//        searchViewTextView.setHintTextColor(getResources().getColor(R.color.light_grey));
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         if (searchView != null) {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -136,7 +139,8 @@ public class MainActivity extends ActionBarActivity {
                         else if (starredFragment.isVisible())
                             starredFragment.search(query);
                     }
-                    searchView.clearFocus();
+                    Log.d("WOEQWPEOIWQEOIWQEPWQ", query);
+//                    searchView.clearFocus();
                     return false;
                 }
 
@@ -171,7 +175,7 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
-//                        searchItem.collapseActionView();
+                        searchItem.collapseActionView();
                         searchView.setQuery("", false);
                     } else {
                         if (drawerLayout.isDrawerOpen(drawerListView)) {
