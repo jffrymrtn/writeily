@@ -1,6 +1,5 @@
 package com.jmartin.writeily;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,6 +9,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +29,7 @@ import java.io.InputStreamReader;
 /**
  * Created by jeff on 2014-04-11.
  */
-public class NoteActivity extends Activity {
+public class NoteActivity extends ActionBarActivity {
 
     private Note note;
     private Context context;
@@ -54,6 +55,12 @@ public class NoteActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_note);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         context = getApplicationContext();
         content = (EditText) findViewById(R.id.note_content);
 
@@ -74,10 +81,10 @@ public class NoteActivity extends Activity {
         } else {
             content.setText(note.getContent());
             loadedFilename = note.getRawFilename();
-            getActionBar().setTitle(note.getTitle());
+            toolbar.setTitle(note.getTitle());
         }
 
-        // Set up the font and background preferences
+        // Set up the font and background activity_preferences
         setupAppearancePreferences();
 
         super.onCreate(savedInstanceState);

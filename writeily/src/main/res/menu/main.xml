@@ -1,9 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.jmartin.writeily.MainActivity" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.jmartin.writeily.MainActivity">
+
     <item android:id="@+id/action_search"
         android:title="@string/search"
         android:icon="@drawable/ic_action_search"
-        android:showAsAction="always|collapseActionView"
+        app:showAsAction="always|collapseActionView"
         android:actionViewClass="android.widget.SearchView" />
+
 </menu>
+

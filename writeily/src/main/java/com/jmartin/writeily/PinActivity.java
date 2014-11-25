@@ -1,11 +1,12 @@
 package com.jmartin.writeily;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -16,7 +17,7 @@ import com.jmartin.writeily.model.Constants;
 /**
  * Created by jeff on 2014-08-20.
  */
-public class PinActivity extends Activity {
+public class PinActivity extends ActionBarActivity {
 
     private Context context;
     private String pin;
@@ -33,6 +34,11 @@ public class PinActivity extends Activity {
         // Get the Intent (to check if coming from Settings)
         String action = getIntent().getAction();
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
         // Get the pin a user may have set
         pin = PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.USER_PIN_KEY, "");
 
@@ -45,9 +51,9 @@ public class PinActivity extends Activity {
         setContentView(R.layout.activity_pin);
         context = getApplicationContext();
 
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(false);
-        }
+//        if (getActionBar() != null) {
+//            getActionBar().setDisplayHomeAsUpEnabled(false);
+//        }
 
         // Find pin EditTexts
         pin1 = (EditText) findViewById(R.id.pin1);
@@ -184,6 +190,7 @@ public class PinActivity extends Activity {
      */
     private void startMain() {
         Intent mainIntent = new Intent(this, MainActivity.class);
+        this.finish();
         startActivity(mainIntent);
     }
 }

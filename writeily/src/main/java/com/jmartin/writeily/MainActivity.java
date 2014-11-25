@@ -1,15 +1,16 @@
 package com.jmartin.writeily;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,13 +18,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.jmartin.writeily.adapter.DrawerAdapter;
 import com.jmartin.writeily.settings.SettingsActivity;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private String[] drawerArrayList;
 
@@ -36,9 +36,9 @@ public class MainActivity extends Activity {
     private ActionBarDrawerToggle drawerToggle;
     private DrawerAdapter drawerAdapter;
 
+    private Toolbar toolbar;
     private Button newNoteButton;
 
-    private ActionBar actionBar;
     private View frameLayout;
 
     private SearchView searchView;
@@ -47,7 +47,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
 
-        actionBar = getActionBar();
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
         frameLayout = findViewById(R.id.frame);
         drawerArrayList = getResources().getStringArray(R.array.drawer_array);
 
@@ -64,27 +68,26 @@ public class MainActivity extends Activity {
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         // Drawer toggle
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer,
-                R.string.open_drawer, R.string.close_drawer) {
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer) {
 
             public void onDrawerClosed(View v) {
                 if (notesFragment.isVisible()) {
-                    setActionBarTitle(getString(R.string.notes));
+                    setToolbarTitle(getString(R.string.notes));
                 } else if (archivesFragment.isVisible()) {
-                    setActionBarTitle(getString(R.string.archive));
+                    setToolbarTitle(getString(R.string.archive));
                 }
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View v) {
-                setActionBarTitle(getString(R.string.app_name));
+                setToolbarTitle(getString(R.string.app_name));
                 invalidateOptionsMenu();
             }
         };
 
         drawerLayout.setDrawerListener(drawerToggle);
 
-        newNoteButton = (Button) findViewById(R.id.new_note_button);
+        newNoteButton = (Button) findViewById(R.id.new_note_fab);
         newNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,7 +108,7 @@ public class MainActivity extends Activity {
                 .replace(R.id.frame, notesFragment)
                 .commit();
 
-        setActionBarTitle(getString(R.string.notes));
+        setToolbarTitle(getString(R.string.notes));
 
         super.onCreate(savedInstanceState);
     }
@@ -115,14 +118,11 @@ public class MainActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) searchItem.getActionView();
-
         // Configure SearchView TextView font stuff
-        int textViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        TextView searchViewTextView = (TextView) searchView.findViewById(textViewId);
-        searchViewTextView.setTextColor(getResources().getColor(android.R.color.white));
-        searchViewTextView.setHintTextColor(getResources().getColor(R.color.light_grey));
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+//        TextView searchViewTextView = (TextView) searchView.findViewById(textViewId);
+//        searchViewTextView.setTextColor(getResources().getColor(android.R.color.white));
+//        searchViewTextView.setHintTextColor(getResources().getColor(R.color.light_grey));
 
         if (searchView != null) {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -171,7 +171,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (!hasFocus) {
-                        searchItem.collapseActionView();
+//                        searchItem.collapseActionView();
                         searchView.setQuery("", false);
                     } else {
                         if (drawerLayout.isDrawerOpen(drawerListView)) {
@@ -180,9 +180,9 @@ public class MainActivity extends Activity {
                     }
                 }
             });
-        }
 
-        searchView.setQueryHint(getString(R.string.search_hint));
+            searchView.setQueryHint(getString(R.string.search_hint));
+        }
 
         return true;
     }
@@ -251,8 +251,8 @@ public class MainActivity extends Activity {
     /**
      * Set the ActionBar title to @title.
      */
-    private void setActionBarTitle(String title) {
-        actionBar.setTitle(title);
+    private void setToolbarTitle(String title) {
+        toolbar.setTitle(title);
     }
 
     private class DrawerClickListener implements ListView.OnItemClickListener {
@@ -263,17 +263,17 @@ public class MainActivity extends Activity {
             if (i == 0) {
                 if (!notesFragment.isVisible()) {
                     fm.beginTransaction().replace(R.id.frame, notesFragment).commit();
-                    setActionBarTitle(getString(R.string.notes));
+                    setToolbarTitle(getString(R.string.notes));
                 }
             } else if (i == 1) {
                 if (!starredFragment.isVisible()) {
                     fm.beginTransaction().replace(R.id.frame, starredFragment).commit();
-                    setActionBarTitle(getString(R.string.starred));
+                    setToolbarTitle(getString(R.string.starred));
                 }
             } else if (i == 2) {
                 if (!archivesFragment.isVisible()) {
                     fm.beginTransaction().replace(R.id.frame, archivesFragment).commit();
-                    setActionBarTitle(getString(R.string.archive));
+                    setToolbarTitle(getString(R.string.archive));
                 }
             } else if (i == 3) {
                 showSettings();

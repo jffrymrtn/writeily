@@ -1,12 +1,13 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/context_menu_delete"
         android:icon="@drawable/ic_trash_light"
         android:title="@string/archive"
-        android:showAsAction="always" />
+        app:showAsAction="always" />
 
     <item android:id="@+id/context_menu_unstar"
         android:icon="@drawable/ic_unstar_light"
         android:title="@string/unstar"
-        android:showAsAction="always" />
+        app:showAsAction="always" />
 
 </menu>
