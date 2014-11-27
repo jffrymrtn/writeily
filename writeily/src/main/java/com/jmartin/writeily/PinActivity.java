@@ -9,6 +9,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -51,10 +53,6 @@ public class PinActivity extends ActionBarActivity {
         setContentView(R.layout.activity_pin);
         context = getApplicationContext();
 
-//        if (getActionBar() != null) {
-//            getActionBar().setDisplayHomeAsUpEnabled(false);
-//        }
-
         // Find pin EditTexts
         pin1 = (EditText) findViewById(R.id.pin1);
         pin2 = (EditText) findViewById(R.id.pin2);
@@ -87,7 +85,10 @@ public class PinActivity extends ActionBarActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 checkPin();
-                pin2.requestFocus();
+
+                if (!editable.toString().isEmpty()) {
+                    pin2.requestFocus();
+                }
             }
         });
 
@@ -102,7 +103,10 @@ public class PinActivity extends ActionBarActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 checkPin();
-                pin3.requestFocus();
+
+                if (!editable.toString().isEmpty()) {
+                    pin3.requestFocus();
+                }
             }
         });
 
@@ -117,7 +121,10 @@ public class PinActivity extends ActionBarActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 checkPin();
-                pin4.requestFocus();
+
+                if (!editable.toString().isEmpty()) {
+                    pin4.requestFocus();
+                }
             }
         });
 
