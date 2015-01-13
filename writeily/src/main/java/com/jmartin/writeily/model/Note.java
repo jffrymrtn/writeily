@@ -1,6 +1,7 @@
 package com.jmartin.writeily.model;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -23,6 +24,8 @@ public class Note implements Serializable {
     private String metadataFilename;
     private String txtFilename;
     private String rawFilename;
+
+    private String imageUri;
 
     private boolean isArchived = false;
     private boolean isStarred = false;
@@ -90,9 +93,10 @@ public class Note implements Serializable {
     /**
      *
      * @param content
+     * @param imageUri
      * @return
      */
-    public boolean update(String content, String title) {
+    public boolean update(String content, String title, String imageUri) {
         boolean result = false;
 
         this.content = content;
@@ -115,6 +119,9 @@ public class Note implements Serializable {
         this.rawFilename = tempFilename;
         this.metadataFilename = this.rawFilename + Constants.WRITEILY_EXT;
         this.txtFilename = this.rawFilename + Constants.TXT_EXT;
+
+        // Set the image URI
+        this.setImageUri(imageUri);
 
         return result;
     }
@@ -165,5 +172,13 @@ public class Note implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 }

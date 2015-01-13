@@ -24,4 +24,5 @@ dependencies {
     compile project('libs:anddown')
     compile 'com.android.support:appcompat-v7:21.0.2'
     compile files('libs/android-support-v7-recyclerview.jar')
+    compile files('libs/picasso-2.4.0.jar')
 }

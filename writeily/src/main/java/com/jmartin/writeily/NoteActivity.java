@@ -1,5 +1,6 @@
 package com.jmartin.writeily;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,12 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.commonsware.cwac.anddown.AndDown;
 import com.jmartin.writeily.dialog.ShareDialog;
 import com.jmartin.writeily.model.Constants;
 import com.jmartin.writeily.model.Note;
+import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -35,8 +39,10 @@ public class NoteActivity extends ActionBarActivity {
     private Context context;
     private EditText noteTitle;
     private EditText content;
+    private ImageView noteImage;
 
     private String loadedFilename;
+    private String imageUri;
 
 
     public NoteActivity() {
@@ -65,6 +71,7 @@ public class NoteActivity extends ActionBarActivity {
         context = getApplicationContext();
         content = (EditText) findViewById(R.id.note_content);
         noteTitle = (EditText) findViewById(R.id.edit_note_title);
+        noteImage = (ImageView) findViewById(R.id.note_image);
 
         Intent receivingIntent = getIntent();
         String intentAction = receivingIntent.getAction();
@@ -83,7 +90,16 @@ public class NoteActivity extends ActionBarActivity {
         } else {
             content.setText(note.getContent());
             loadedFilename = note.getRawFilename();
+            imageUri = note.getImageUri();
             noteTitle.setText(note.getTitle());
+        }
+
+        // Show/Hide noteImage
+        if (imageUri == null) {
+            noteImage.setVisibility(View.GONE);
+        } else {
+            noteImage.setVisibility(View.VISIBLE);
+            Picasso.with(context).load(Uri.parse(imageUri)).fit().centerCrop().into(noteImage);
         }
 
         // Set up the font and background activity_preferences
@@ -150,6 +166,9 @@ public class NoteActivity extends ActionBarActivity {
             case android.R.id.home:
                 super.onBackPressed();
                 return true;
+            case R.id.action_add_image:
+                promptForImage();
+                return true;
             case R.id.action_share:
                 showShareDialog();
                 return true;
@@ -184,8 +203,20 @@ public class NoteActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         unregisterReceiver(shareBroadcastReceiver);
-        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString()));
+        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri));
         super.onPause();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == Constants.CHOOSE_PHOTO_KEY) {
+                imageUri = data.getData().toString();
+                noteImage.setVisibility(View.VISIBLE);
+                Picasso.with(context).load(Uri.parse(imageUri)).fit().centerCrop().into(noteImage);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setupAppearancePreferences() {
@@ -214,7 +245,7 @@ public class NoteActivity extends ActionBarActivity {
     }
 
     private void previewNote() {
-        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString()));
+        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri));
 
         Intent intent = new Intent(this, PreviewActivity.class);
 
@@ -225,7 +256,7 @@ public class NoteActivity extends ActionBarActivity {
     }
 
     private void shareNote(int type) {
-        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString()));
+        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri));
 
         String shareContent = "";
 
@@ -247,6 +278,14 @@ public class NoteActivity extends ActionBarActivity {
         FragmentManager fragManager = getFragmentManager();
         ShareDialog shareDialog = new ShareDialog();
         shareDialog.show(fragManager, Constants.SHARE_DIALOG_TAG);
+    }
+
+    private void promptForImage() {
+        Intent imageIntent = new Intent();
+        imageIntent.setAction(Intent.ACTION_PICK);
+        imageIntent.setType("image/*");
+
+        startActivityForResult(imageIntent, Constants.CHOOSE_PHOTO_KEY);
     }
 
     private void saveNote(boolean requiresOverwrite) {

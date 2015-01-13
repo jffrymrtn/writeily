@@ -21,7 +21,9 @@ public class Constants {
     public static final String USER_PIN_KEY = "user_pin";
     public static final String SET_PIN_ACTION = "set_pin";
     public static String NOTE_KEY = "note_key";
+
     public static final int SET_PIN_REQUEST_CODE = 3;
+    public static final int CHOOSE_PHOTO_KEY = 21;
 
     // ----- SHARE INT ENUMERATIONS -----
     public static final int SHARE_TXT_TYPE = 0;
