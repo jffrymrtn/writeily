@@ -1,6 +1,7 @@
 package com.jmartin.writeily.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -95,9 +96,7 @@ public class Note implements Serializable {
         boolean result = false;
 
         this.content = content;
-
-        // Update the title
-        this.title = title;
+        this.title = title.isEmpty() ? this.title : title;
 
         // Make sure the title is of appropriate length
         if (this.title.length() > Constants.MAX_TITLE_LENGTH) {
@@ -105,7 +104,7 @@ public class Note implements Serializable {
         }
 
         // Get the new filename (may or may not be unchanged)
-        String tempFilename = title.replaceAll("[^\\w\\s]+", "");
+        String tempFilename = this.title.replaceAll("[^\\w\\s]+", "");
 
         // Flag result if the title needs to change (means metadataFilename needs to change too)
         if (!rawFilename.equals(tempFilename)) {
