@@ -91,13 +91,13 @@ public class Note implements Serializable {
      * @param content
      * @return
      */
-    public boolean update(String content) {
+    public boolean update(String content, String title) {
         boolean result = false;
 
         this.content = content;
 
         // Update the title
-        this.title = content.trim().split("\n")[0].trim();
+        this.title = title;
 
         // Make sure the title is of appropriate length
         if (this.title.length() > Constants.MAX_TITLE_LENGTH) {
@@ -146,6 +146,7 @@ public class Note implements Serializable {
     }
 
     /**
+     * Write the file to internal storage.
      *
      * @param context
      * @param filename

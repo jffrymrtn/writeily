@@ -33,6 +33,7 @@ public class NoteActivity extends ActionBarActivity {
 
     private Note note;
     private Context context;
+    private EditText noteTitle;
     private EditText content;
 
     private String loadedFilename;
@@ -63,6 +64,7 @@ public class NoteActivity extends ActionBarActivity {
 
         context = getApplicationContext();
         content = (EditText) findViewById(R.id.note_content);
+        noteTitle = (EditText) findViewById(R.id.edit_note_title);
 
         Intent receivingIntent = getIntent();
         String intentAction = receivingIntent.getAction();
@@ -81,7 +83,7 @@ public class NoteActivity extends ActionBarActivity {
         } else {
             content.setText(note.getContent());
             loadedFilename = note.getRawFilename();
-            toolbar.setTitle(note.getTitle());
+            noteTitle.setText(note.getTitle());
         }
 
         // Set up the font and background activity_preferences
@@ -182,7 +184,7 @@ public class NoteActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         unregisterReceiver(shareBroadcastReceiver);
-        saveNote(note.update(content.getText().toString()));
+        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString()));
         super.onPause();
     }
 
@@ -212,7 +214,7 @@ public class NoteActivity extends ActionBarActivity {
     }
 
     private void previewNote() {
-        saveNote(note.update(content.getText().toString()));
+        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString()));
 
         Intent intent = new Intent(this, PreviewActivity.class);
 
@@ -223,7 +225,7 @@ public class NoteActivity extends ActionBarActivity {
     }
 
     private void shareNote(int type) {
-        saveNote(note.update(content.getText().toString()));
+        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString()));
 
         String shareContent = "";
 
@@ -231,9 +233,7 @@ public class NoteActivity extends ActionBarActivity {
             shareContent = note.getContent();
         } else if (type == Constants.SHARE_HTML_TYPE) {
             AndDown andDown = new AndDown();
-            shareContent = Constants.UNSTYLED_HTML_PREFIX +
-                           andDown.markdownToHtml(note.getContent()) +
-                           Constants.MD_HTML_SUFFIX;
+            shareContent = andDown.markdownToHtml(note.getContent());
         }
 
         Intent shareIntent = new Intent();
