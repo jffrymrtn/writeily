@@ -17,12 +17,12 @@
     <string name="restore">Restore</string>
     <string name="unstar">Unstar</string>
     <string name="title">Title</string>
+    <string name="choose_photo">Choose Photo</string>
 
     <string name="empty_notes_list_hint">When you create a new note,\nthis is where it will show up</string>
     <string name="empty_archives_hint">When you archive a note, \nthis is where it will show up</string>
     <string name="empty_starred_hint">When you star a note,\nthis is where it will show up</string>
     <string name="search_hint">Search notes</string>
-    <string name="share_string">Share to&#8230;</string>
     <string name="share">Share</string>
     <string name="search">Search</string>
     <string name="preview">Preview</string>
@@ -30,9 +30,8 @@
     <string name="social">Social</string>
     <string name="meta">Meta</string>
 
-    <string name="share_text">Plain Text</string>
-    <string name="share_html">HTML</string>
-    <string name="share_as">Share as&#8230;</string>
+    <string name="share_string">Share to&#8230;</string>
+
     <string name="pref_font_size">Font Size</string>
     <string name="pref_pin">Pin Lock</string>
     <string name="pin_title">Enter your pin</string>
@@ -79,5 +78,4 @@
     <string name="pref_font_size_key">pref_font_size_key</string>
     <string name="pin_go">Go</string>
     <string name="pref_pin_key">pref_pin</string>
-    <string name="choose_photo">Choose Photo</string>
 </resources>

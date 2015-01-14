@@ -1,11 +1,8 @@
 package com.jmartin.writeily;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,16 +16,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.commonsware.cwac.anddown.AndDown;
-import com.jmartin.writeily.dialog.ShareDialog;
 import com.jmartin.writeily.model.Constants;
 import com.jmartin.writeily.model.Note;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by jeff on 2014-04-11.
@@ -72,6 +70,13 @@ public class NoteActivity extends ActionBarActivity {
         content = (EditText) findViewById(R.id.note_content);
         noteTitle = (EditText) findViewById(R.id.edit_note_title);
         noteImage = (ImageView) findViewById(R.id.note_image);
+
+        noteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO view full image
+            }
+        });
 
         Intent receivingIntent = getIntent();
         String intentAction = receivingIntent.getAction();
@@ -170,7 +175,7 @@ public class NoteActivity extends ActionBarActivity {
                 promptForImage();
                 return true;
             case R.id.action_share:
-                showShareDialog();
+                shareNote();
                 return true;
             case R.id.action_preview:
                 previewNote();
@@ -193,16 +198,11 @@ public class NoteActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
-        IntentFilter ifilter = new IntentFilter();
-        ifilter.addAction(Constants.SHARE_BROADCAST_TAG);
-        registerReceiver(shareBroadcastReceiver, ifilter);
-
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        unregisterReceiver(shareBroadcastReceiver);
         saveNote(note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri));
         super.onPause();
     }
@@ -255,29 +255,16 @@ public class NoteActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    private void shareNote(int type) {
+    private void shareNote() {
         saveNote(note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri));
 
-        String shareContent = "";
-
-        if (type == Constants.SHARE_TXT_TYPE) {
-            shareContent = note.getContent();
-        } else if (type == Constants.SHARE_HTML_TYPE) {
-            AndDown andDown = new AndDown();
-            shareContent = andDown.markdownToHtml(note.getContent());
-        }
+        String shareContent = note.getContent();
 
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareContent);
         shareIntent.setType("text/plain");
         startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_string)));
-    }
-
-    private void showShareDialog() {
-        FragmentManager fragManager = getFragmentManager();
-        ShareDialog shareDialog = new ShareDialog();
-        shareDialog.show(fragManager, Constants.SHARE_DIALOG_TAG);
     }
 
     private void promptForImage() {
@@ -288,17 +275,20 @@ public class NoteActivity extends ActionBarActivity {
         startActivityForResult(imageIntent, Constants.CHOOSE_PHOTO_KEY);
     }
 
+    private void saveImage() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Constants.WRITEILY_IMG_DIR);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // TODO save image
+    }
+
     private void saveNote(boolean requiresOverwrite) {
         loadedFilename = note.save(context, loadedFilename, requiresOverwrite);
     }
-
-    private BroadcastReceiver shareBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.SHARE_BROADCAST_TAG)) {
-                shareNote(intent.getIntExtra(Constants.SHARE_TYPE_TAG, 0));
-            }
-        }
-    };
 }

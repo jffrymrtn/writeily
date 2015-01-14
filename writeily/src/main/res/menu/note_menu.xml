@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/action_add_image"
         android:title="@string/add_image"
-        android:icon="@drawable/ic_image_light"
+        android:icon="@drawable/ic_camera_light"
         app:showAsAction="always" />
     <item android:id="@+id/action_preview"
         android:title="@string/preview"

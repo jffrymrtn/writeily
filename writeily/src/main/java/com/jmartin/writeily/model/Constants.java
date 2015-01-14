@@ -1,5 +1,9 @@
 package com.jmartin.writeily.model;
 
+import android.os.Environment;
+
+import java.io.File;
+
 /**
  * Created by jeff on 2014-04-11.
  */
@@ -9,6 +13,8 @@ public class Constants {
     public static final String MD_EXT = ".md";
     public static final String MARKDOWN_EXT = ".markdown";
     public static final String MDOWN_EXT = ".mdown";
+
+    public static final String WRITEILY_IMG_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + File.separator + "writeily/";
 
     public static final String MD_PREVIEW_KEY = "md_preview_key";
     public static final String UTF_CHARSET = "utf-8";
@@ -28,6 +34,7 @@ public class Constants {
     // ----- SHARE INT ENUMERATIONS -----
     public static final int SHARE_TXT_TYPE = 0;
     public static final int SHARE_HTML_TYPE = 1;
+    public static final int PRINT_AS_PDF = 2;
 
     // ----- HTML PREFIX AND SUFFIXES -----
     public static final String UNSTYLED_HTML_PREFIX = "<html><body>";
