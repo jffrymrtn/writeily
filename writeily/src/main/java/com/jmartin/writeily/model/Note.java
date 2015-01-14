@@ -1,8 +1,6 @@
 package com.jmartin.writeily.model;
 
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -24,8 +22,6 @@ public class Note implements Serializable {
     private String metadataFilename;
     private String txtFilename;
     private String rawFilename;
-
-    private String imageUri;
 
     private boolean isArchived = false;
     private boolean isStarred = false;
@@ -93,14 +89,15 @@ public class Note implements Serializable {
     /**
      *
      * @param content
-     * @param imageUri
      * @return
      */
-    public boolean update(String content, String title, String imageUri) {
+    public boolean update(String content) {
         boolean result = false;
 
         this.content = content;
-        this.title = title.isEmpty() ? this.title : title;
+
+        // Update the title
+        this.title = content.trim().split("\n")[0].trim();
 
         // Make sure the title is of appropriate length
         if (this.title.length() > Constants.MAX_TITLE_LENGTH) {
@@ -108,7 +105,7 @@ public class Note implements Serializable {
         }
 
         // Get the new filename (may or may not be unchanged)
-        String tempFilename = this.title.replaceAll("[^\\w\\s]+", "");
+        String tempFilename = title.replaceAll("[^\\w\\s]+", "");
 
         // Flag result if the title needs to change (means metadataFilename needs to change too)
         if (!rawFilename.equals(tempFilename)) {
@@ -119,9 +116,6 @@ public class Note implements Serializable {
         this.rawFilename = tempFilename;
         this.metadataFilename = this.rawFilename + Constants.WRITEILY_EXT;
         this.txtFilename = this.rawFilename + Constants.TXT_EXT;
-
-        // Set the image URI
-        this.setImageUri(imageUri);
 
         return result;
     }
@@ -152,7 +146,6 @@ public class Note implements Serializable {
     }
 
     /**
-     * Write the file to internal storage.
      *
      * @param context
      * @param filename
@@ -172,13 +165,5 @@ public class Note implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public String getImageUri() {
-        return imageUri;
-    }
-
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
     }
 }

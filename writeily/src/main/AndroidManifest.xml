@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature    android:name="android.hardware.camera" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -53,9 +52,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".NoteImageActivity">
-        </activity>
-
         <activity android:name=".PreviewActivity"
             android:label="@string/preview">
         </activity>
@@ -63,7 +59,7 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/action_settings"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.Light"
             android:parentActivityName=".MainActivity">
         </activity>
 

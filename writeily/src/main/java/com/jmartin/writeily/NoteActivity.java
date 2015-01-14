@@ -1,8 +1,10 @@
 package com.jmartin.writeily;
 
-import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,21 +14,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 
+import com.commonsware.cwac.anddown.AndDown;
+import com.jmartin.writeily.dialog.ShareDialog;
 import com.jmartin.writeily.model.Constants;
 import com.jmartin.writeily.model.Note;
-import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by jeff on 2014-04-11.
@@ -35,12 +33,9 @@ public class NoteActivity extends ActionBarActivity {
 
     private Note note;
     private Context context;
-    private EditText noteTitle;
     private EditText content;
-    private ImageView noteImage;
 
     private String loadedFilename;
-    private String imageUri;
 
 
     public NoteActivity() {
@@ -68,17 +63,6 @@ public class NoteActivity extends ActionBarActivity {
 
         context = getApplicationContext();
         content = (EditText) findViewById(R.id.note_content);
-        noteTitle = (EditText) findViewById(R.id.edit_note_title);
-        noteImage = (ImageView) findViewById(R.id.note_image);
-
-        noteImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(NoteActivity.this, NoteImageActivity.class);
-                intent.putExtra(Constants.IMAGE_URI_EXTRA, imageUri);
-                startActivityForResult(intent, Constants.VIEW_PHOTO_KEY);
-            }
-        });
 
         Intent receivingIntent = getIntent();
         String intentAction = receivingIntent.getAction();
@@ -97,16 +81,7 @@ public class NoteActivity extends ActionBarActivity {
         } else {
             content.setText(note.getContent());
             loadedFilename = note.getRawFilename();
-            imageUri = note.getImageUri();
-            noteTitle.setText(note.getTitle());
-        }
-
-        // Show/Hide noteImage
-        if (imageUri == null) {
-            noteImage.setVisibility(View.GONE);
-        } else {
-            noteImage.setVisibility(View.VISIBLE);
-            Picasso.with(context).load(Uri.parse(imageUri)).fit().centerCrop().into(noteImage);
+            toolbar.setTitle(note.getTitle());
         }
 
         // Set up the font and background activity_preferences
@@ -173,11 +148,8 @@ public class NoteActivity extends ActionBarActivity {
             case android.R.id.home:
                 super.onBackPressed();
                 return true;
-            case R.id.action_add_image:
-                promptForImage();
-                return true;
             case R.id.action_share:
-                shareNote();
+                showShareDialog();
                 return true;
             case R.id.action_preview:
                 previewNote();
@@ -200,32 +172,18 @@ public class NoteActivity extends ActionBarActivity {
 
     @Override
     protected void onResume() {
+        IntentFilter ifilter = new IntentFilter();
+        ifilter.addAction(Constants.SHARE_BROADCAST_TAG);
+        registerReceiver(shareBroadcastReceiver, ifilter);
+
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri));
+        unregisterReceiver(shareBroadcastReceiver);
+        saveNote(note.update(content.getText().toString()));
         super.onPause();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == Constants.CHOOSE_PHOTO_KEY) {
-                imageUri = data.getData().toString();
-                noteImage.setVisibility(View.VISIBLE);
-                Picasso.with(context).load(Uri.parse(imageUri)).fit().centerCrop().into(noteImage);
-            } else if (requestCode == Constants.VIEW_PHOTO_KEY) {
-                if (data.getBooleanExtra(Constants.DELETE_IMAGE_KEY, false)) {
-                    noteImage.setImageBitmap(null);
-                    imageUri = null;
-                    note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri);
-                    noteImage.setVisibility(View.GONE);
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setupAppearancePreferences() {
@@ -254,7 +212,7 @@ public class NoteActivity extends ActionBarActivity {
     }
 
     private void previewNote() {
-        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri));
+        saveNote(note.update(content.getText().toString()));
 
         Intent intent = new Intent(this, PreviewActivity.class);
 
@@ -264,10 +222,19 @@ public class NoteActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    private void shareNote() {
-        saveNote(note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri));
+    private void shareNote(int type) {
+        saveNote(note.update(content.getText().toString()));
 
-        String shareContent = note.getContent();
+        String shareContent = "";
+
+        if (type == Constants.SHARE_TXT_TYPE) {
+            shareContent = note.getContent();
+        } else if (type == Constants.SHARE_HTML_TYPE) {
+            AndDown andDown = new AndDown();
+            shareContent = Constants.UNSTYLED_HTML_PREFIX +
+                           andDown.markdownToHtml(note.getContent()) +
+                           Constants.MD_HTML_SUFFIX;
+        }
 
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
@@ -276,28 +243,23 @@ public class NoteActivity extends ActionBarActivity {
         startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_string)));
     }
 
-    private void promptForImage() {
-        Intent imageIntent = new Intent();
-        imageIntent.setAction(Intent.ACTION_PICK);
-        imageIntent.setType("image/*");
-
-        startActivityForResult(imageIntent, Constants.CHOOSE_PHOTO_KEY);
-    }
-
-    private void saveImage() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Constants.WRITEILY_IMG_DIR);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // TODO save image
+    private void showShareDialog() {
+        FragmentManager fragManager = getFragmentManager();
+        ShareDialog shareDialog = new ShareDialog();
+        shareDialog.show(fragManager, Constants.SHARE_DIALOG_TAG);
     }
 
     private void saveNote(boolean requiresOverwrite) {
         loadedFilename = note.save(context, loadedFilename, requiresOverwrite);
     }
+
+    private BroadcastReceiver shareBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constants.SHARE_BROADCAST_TAG)) {
+                shareNote(intent.getIntExtra(Constants.SHARE_TYPE_TAG, 0));
+            }
+        }
+    };
 }

@@ -1,9 +1,5 @@
 package com.jmartin.writeily.model;
 
-import android.os.Environment;
-
-import java.io.File;
-
 /**
  * Created by jeff on 2014-04-11.
  */
@@ -14,8 +10,6 @@ public class Constants {
     public static final String MARKDOWN_EXT = ".markdown";
     public static final String MDOWN_EXT = ".mdown";
 
-    public static final String WRITEILY_IMG_DIR = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + File.separator + "writeily/";
-
     public static final String MD_PREVIEW_KEY = "md_preview_key";
     public static final String UTF_CHARSET = "utf-8";
 
@@ -23,21 +17,15 @@ public class Constants {
     public static final String SHARE_BROADCAST_TAG = "share_broadcast_tag";
     public static final String BROADCAST_EXTRA = "broadcast_extra";
     public static final String SHARE_TYPE_TAG = "share_type_tag";
-    public static final String IMAGE_URI_EXTRA = "image_uri_extra";
-    public static final int MAX_TITLE_LENGTH = 20;
+    public static final int MAX_TITLE_LENGTH = 25;
     public static final String USER_PIN_KEY = "user_pin";
     public static final String SET_PIN_ACTION = "set_pin";
-    public static final String DELETE_IMAGE_KEY = "delete_image_key";
     public static String NOTE_KEY = "note_key";
-
     public static final int SET_PIN_REQUEST_CODE = 3;
-    public static final int CHOOSE_PHOTO_KEY = 21;
-    public static final int VIEW_PHOTO_KEY = 22;
 
     // ----- SHARE INT ENUMERATIONS -----
     public static final int SHARE_TXT_TYPE = 0;
     public static final int SHARE_HTML_TYPE = 1;
-    public static final int PRINT_AS_PDF = 2;
 
     // ----- HTML PREFIX AND SUFFIXES -----
     public static final String UNSTYLED_HTML_PREFIX = "<html><body>";
