@@ -53,6 +53,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".NoteImageActivity">
+        </activity>
+
         <activity android:name=".PreviewActivity"
             android:label="@string/preview">
         </activity>

@@ -74,7 +74,9 @@ public class NoteActivity extends ActionBarActivity {
         noteImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO view full image
+                Intent intent = new Intent(NoteActivity.this, NoteImageActivity.class);
+                intent.putExtra(Constants.IMAGE_URI_EXTRA, imageUri);
+                startActivityForResult(intent, Constants.VIEW_PHOTO_KEY);
             }
         });
 
@@ -214,6 +216,13 @@ public class NoteActivity extends ActionBarActivity {
                 imageUri = data.getData().toString();
                 noteImage.setVisibility(View.VISIBLE);
                 Picasso.with(context).load(Uri.parse(imageUri)).fit().centerCrop().into(noteImage);
+            } else if (requestCode == Constants.VIEW_PHOTO_KEY) {
+                if (data.getBooleanExtra(Constants.DELETE_IMAGE_KEY, false)) {
+                    noteImage.setImageBitmap(null);
+                    imageUri = null;
+                    note.update(content.getText().toString(), noteTitle.getText().toString(), imageUri);
+                    noteImage.setVisibility(View.GONE);
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

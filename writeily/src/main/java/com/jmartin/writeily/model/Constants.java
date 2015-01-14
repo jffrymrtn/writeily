@@ -23,13 +23,16 @@ public class Constants {
     public static final String SHARE_BROADCAST_TAG = "share_broadcast_tag";
     public static final String BROADCAST_EXTRA = "broadcast_extra";
     public static final String SHARE_TYPE_TAG = "share_type_tag";
+    public static final String IMAGE_URI_EXTRA = "image_uri_extra";
     public static final int MAX_TITLE_LENGTH = 20;
     public static final String USER_PIN_KEY = "user_pin";
     public static final String SET_PIN_ACTION = "set_pin";
+    public static final String DELETE_IMAGE_KEY = "delete_image_key";
     public static String NOTE_KEY = "note_key";
 
     public static final int SET_PIN_REQUEST_CODE = 3;
     public static final int CHOOSE_PHOTO_KEY = 21;
+    public static final int VIEW_PHOTO_KEY = 22;
 
     // ----- SHARE INT ENUMERATIONS -----
     public static final int SHARE_TXT_TYPE = 0;
