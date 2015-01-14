@@ -16,6 +16,7 @@
     <string name="starred">Starred</string>
     <string name="restore">Restore</string>
     <string name="unstar">Unstar</string>
+    <string name="title">Title</string>
 
     <string name="empty_notes_list_hint">When you create a new note,\nthis is where it will show up</string>
     <string name="empty_archives_hint">When you archive a note, \nthis is where it will show up</string>
