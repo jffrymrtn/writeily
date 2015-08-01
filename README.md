@@ -1,22 +1,16 @@
 # Writeily Android app
 
-Download the app for **free** on Google Play: [https://play.google.com/store/apps/details?id=com.jmartin.writeily](https://play.google.com/store/apps/details?id=com.jmartin.writeily)
+## NOTICE
 
-## Website
+**Development on this app has been indefinitely put on hold.**
 
-The landing page for Writeily is also open sourced in this repository, under the [gh-pages branch](https://github.com/jffrymrtn/writeily/tree/gh-pages).
-
-## Contributions
-
-Contribution guidelines coming soon!
-
-For feature requests, bug reports, and all that jazz, feel free to open an [Issue](https://github.com/jffrymrtn/writeily/issues).
+Due to time restrictions, I won't be able to work on Writeily anymore, nor review Pull Requests and respond to Issues. The app will still be downloadable on the [Play Store for free](https://play.google.com/store/apps/details?id=com.jmartin.writeily) but I encourage you to download the Pro version instead (also **free**!) - which is supported by my good friend, [plafue](https://github.com/plafue).
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Jeff Martin
+Copyright (c) 2014 - 2015 Jeff Martin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
